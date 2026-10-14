@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SwiftDelivery — Terms of Service</title>
+  <style>
+    body { font-family: sans-serif; max-width: 720px; margin: 40px auto; padding: 0 20px; color: #1a1a1a; line-height: 1.6; }
+    h1 { font-size: 1.6rem; margin-bottom: 4px; }
+    .subtitle { color: #666; font-size: 0.9rem; margin-bottom: 32px; }
+    h2 { font-size: 1.05rem; margin-top: 28px; margin-bottom: 6px; }
+    p { margin: 6px 0; }
+    a { color: #555; }
+  </style>
+</head>
+<body>
+  <h1>SwiftDelivery — Terms of Service</h1>
+  <p class="subtitle">Last updated: October 2026</p>
+
+  <h2>1. General Provisions</h2>
+  <p>These Terms of Service govern your use of SwiftDelivery, a peer-to-peer delivery marketplace accessible as a Telegram Mini App. By using the Service you accept these Terms in full. If you do not agree, please discontinue use.</p>
+
+  <h2>2. Service Description</h2>
+  <p>SwiftDelivery is a decentralised marketplace that connects Clients (people who need a parcel delivered) with Couriers (people willing to deliver it). Order logic and payments are handled by smart contracts on the TON blockchain. The platform does not act as a courier, does not participate in physical delivery, and does not guarantee delivery outcomes.</p>
+
+  <h2>3. User Roles</h2>
+  <p><strong>Client</strong> — creates a delivery order, specifies the destination city, an optional origin place, a parcel description, and the delivery time (1 to 14 days), locks the reward in a smart contract, and confirms receipt by showing their delivery code to the Courier. A Telegram @username is required to create an order — it is visible to Couriers who open the order, so they can ask questions before accepting.</p>
+  <p><strong>Courier</strong> — accepts an open order, performs the delivery, and receives the reward by scanning the Client's delivery code upon handover. A Telegram @username is required to accept an order — it is shared with the Client upon acceptance.</p>
+  <p>One Telegram account may act as both Client and Courier in different orders.</p>
+
+  <h2>4. Payments and Fees</h2>
+  <p>The delivery reward is paid in USDT, with a minimum of $10. The Client transfers the reward directly in USDT when creating the order; it is held by the order's own USDT wallet until it is released to the Courier or returned to the Client. Service fees and blockchain network fees are paid separately from the reward, in GRAM — the name the Service uses for the native coin of the TON blockchain.</p>
+  <p>The Service charges flat service fees, paid to the smart contract. Each service fee already includes all blockchain network fees of that action; nothing is charged on top:</p>
+  <p><strong>Create fee — 0.1 GRAM</strong>, paid by the Client together with the reward when creating an order. Non-refundable under any circumstances. The reward itself is returned to the Client if the order is cancelled or expires.</p>
+  <p><strong>Accept fee — 0.1 GRAM</strong>, paid by the Courier when accepting an order. It is not a stake or deposit: it stays with the platform and is not returned, whether the delivery succeeds or not.</p>
+  <p><strong>Cancel fee — 0.3 GRAM</strong>, paid by the Client when cancelling an open order, on top of the create fee already paid. Non-refundable.</p>
+  <p><strong>Release fee — 0.2 GRAM</strong>, paid by the Courier when giving up an accepted order, on top of the accept fee already paid. Non-refundable.</p>
+  <p>Confirming a delivery and reclaiming an expired order have no service fee: the caller pays only a small network fee, which the app measures before you sign. Cancelling an order whose reward has not yet arrived (Funding) has no service fee either.</p>
+  <p>Because transactions are executed on a public blockchain they are irreversible. Please verify all order details before confirming a transaction.</p>
+
+  <h2>5. Order Process and Delivery Code</h2>
+  <p>An order may be in one of the following states: <em>Funding</em> (created, the reward is on its way to the order, usually a few seconds), <em>Open</em>, <em>Accepted</em>, <em>Completed</em>, <em>Cancelled</em>, or <em>Expired</em>.</p>
+  <p><strong>Delivery confirmation:</strong> when creating an order the Client receives a private delivery code (shown as a QR code). Delivery is confirmed when the Courier scans this code — scanning it pays the Courier the reward; there is no separate confirmation step. The Client must show the code only when the parcel is in their hands. The code is stored on the Client's device and backed up to their Telegram account's cloud storage. If the code is lost, the Courier cannot be paid, and the Client can reclaim the reward after the deadline.</p>
+  <p><strong>Deadline:</strong> the Client chooses the delivery time, from 1 to 14 days, when creating the order. After a Courier accepts the order, they have that many days to complete the delivery. If delivery has not been confirmed before the deadline, only the Client may reclaim the order via the smart contract. In that case the reward is returned to the Client; the Courier receives nothing.</p>
+  <p><strong>Cancellation:</strong> the Client may cancel an order only while it is in the Open state (before any Courier accepts it). Once a Courier has accepted, the Client cannot cancel — the Courier must give the order up first, which returns it to Open, after which the Client may cancel. On cancellation the full reward is returned to the Client; the create fee and the cancel fee remain with the platform.</p>
+  <p><strong>Courier release:</strong> a Courier who has accepted an order may give it up at any time before delivery is confirmed, paying the release fee. The order returns to Open and the reward remains locked in the contract for the next courier.</p>
+
+  <h2>6. Referral Program</h2>
+  <p>The app may be opened through a referral link that carries a partner's TON wallet address. The first referral link a user opens stays with their account for good; a later link does not replace it. Every order the user creates records that address on-chain, and the smart contract automatically pays that address half of the accumulated service fees when the order settles. This does not change the fees or the reward paid by the users of the order.</p>
+
+  <h2>7. Acceptable Use</h2>
+  <p>Users must not use SwiftDelivery to transport illegal goods, controlled substances, weapons, hazardous materials, or any items prohibited by applicable law. Users are solely responsible for the contents of any parcel and for compliance with local regulations.</p>
+  <p>Any attempt to defraud another user, manipulate smart contract logic, or abuse the platform may result in immediate blocking without compensation.</p>
+
+  <h2>8. Disclaimer of Warranties</h2>
+  <p>The Service is provided "AS IS". SwiftDelivery makes no guarantees regarding delivery success, counterparty reliability, blockchain network availability, or transaction finality times. Use the Service at your own risk.</p>
+
+  <h2>9. Access Restriction</h2>
+  <p>The platform may restrict or suspend access to any account that violates these Terms or applicable law, or for reasons required by legal authorities.</p>
+
+  <h2>10. Privacy</h2>
+  <p>Personal data is handled in accordance with our <a href="./privacy.html">Privacy Policy</a>.</p>
+
+  <h2>11. Amendments</h2>
+  <p>These Terms may be updated at any time. Continued use of the Service after changes are posted constitutes acceptance of the revised Terms.</p>
+
+  <h2>12. Support</h2>
+  <p>For questions or disputes, contact us via our support chat: <a href="https://t.me/SwiftDelivery_support" target="_blank" rel="noopener noreferrer">t.me/SwiftDelivery_support</a>.</p>
+</body>
+</html>

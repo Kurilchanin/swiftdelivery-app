@@ -1,0 +1,1355 @@
+/* App theme — a dark wallet look: deep graphite page, raised rounded cards with
+   a faint edge, a plain system sans, and one warm pale-yellow accent for the
+   main action. Status and money use soft green / amber / red only as signals.
+   We do NOT apply Telegram's own theme colors (see telegram.js), so the app
+   looks the same for everyone. */
+:root {
+  --bg: #14161b; /* page (= PAGE_BG in telegram.js; keep the two equal) */
+  --card: #1d1f24; /* raised cards and rows */
+  --card-2: #26282e; /* controls inside a card, icon tiles, secondary buttons */
+  --card-3: #2f3138; /* pressed / hover fill */
+  --edge: rgba(255, 255, 255, 0.07); /* card edge */
+  --edge-strong: rgba(255, 255, 255, 0.14); /* control edge */
+  --divider: rgba(255, 255, 255, 0.06);
+  --text: #f1f1f2;
+  --text-2: #c9cace;
+  --hint: #9b9da4;
+  --accent: #fbe8a6; /* main action: pale yellow */
+  --accent-press: #f1d982;
+  --accent-ink: #1b1a16;
+  --accent-ledge: #b5a35f; /* the darker bottom edge of a raised accent button */
+  --green: #3ec08d;
+  --amber: #e8b54d;
+  --blue: #5aa3f0;
+  --red: #f06a62;
+  --red-fill: rgba(240, 106, 98, 0.13);
+  --r-card: 20px;
+  --r-ctl: 14px;
+  --nav-h: 64px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  font: 15px/1.45 -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  color-scheme: dark;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.icon {
+  flex-shrink: 0;
+  display: block;
+}
+/* Arrows and chevrons point the other way in right-to-left languages. */
+[dir='rtl'] .icon-flip {
+  transform: scaleX(-1);
+}
+
+/* Addresses and links are data: a monospace face keeps them easy to compare. */
+.mono {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+/* --- Layout --- */
+.app {
+  max-width: 560px;
+  margin: 0 auto;
+  min-height: 100svh;
+  background: var(--bg);
+}
+
+.content {
+  padding: 12px 16px calc(var(--nav-h) + 28px + env(safe-area-inset-bottom));
+}
+
+.page-title {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 8px 0 18px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* A title with a square icon button beside it (My orders sync, Feed filter). */
+.page-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0 18px;
+}
+.page-head .page-title {
+  flex: 1;
+  margin: 0;
+}
+
+/* Square outlined icon button, like a wallet's filter / menu buttons. */
+.icon-btn {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  border: 1px solid var(--edge-strong);
+  border-radius: var(--r-ctl);
+  color: var(--text);
+  transition: background 0.15s, border-color 0.15s;
+}
+.icon-btn:hover:not(:disabled),
+.icon-btn:active:not(:disabled) {
+  background: var(--card-2);
+}
+.icon-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+/* A small accent dot: a filter is on. */
+.icon-btn .dot {
+  position: absolute;
+  top: 8px;
+  inset-inline-end: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.icon-btn.spinning .icon {
+  animation: spin 0.9s linear infinite;
+}
+
+.empty,
+.hint {
+  color: var(--hint);
+  font-size: 13.5px;
+}
+
+.error {
+  color: var(--red);
+  font-size: 13.5px;
+}
+
+/* An empty / failed list: centered text with its next step under it. */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  padding: 40px 12px;
+}
+.empty-state p {
+  margin: 0;
+}
+.empty-state .btn {
+  min-width: 200px;
+}
+
+/* Terms / Privacy links at the bottom of the Profile page. */
+.legal-links {
+  text-align: center;
+  margin-top: 8px;
+}
+.legal-links a {
+  display: inline-block;
+  padding: 12px 4px;
+  color: var(--hint);
+}
+
+/* --- Cards & lists --- */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--edge);
+  border-radius: var(--r-card);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.card p {
+  margin: 6px 0;
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+/* A card made of rows split by thin dividers (settings list, grouped token). */
+.group {
+  background: var(--card);
+  border: 1px solid var(--edge);
+  border-radius: var(--r-card);
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: none;
+  border: none;
+  text-align: start;
+  color: var(--text);
+  min-height: 60px;
+}
+.row + .row {
+  border-top: 1px solid var(--divider);
+}
+button.row {
+  transition: background 0.15s;
+}
+button.row:hover,
+button.row:active {
+  background: var(--card-2);
+}
+.row-body {
+  flex: 1;
+  min-width: 0;
+}
+.row-title {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.row-sub {
+  display: block;
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--hint);
+  overflow-wrap: anywhere;
+}
+.row-end {
+  color: var(--hint);
+}
+/* Rounded square behind a row's leading icon. */
+.tile {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: var(--card-2);
+  color: var(--text-2);
+}
+.avatar {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--card-3);
+  color: var(--text);
+  font-weight: 700;
+  font-size: 18px;
+}
+
+/* QR code for the delivery hand-off. The code itself must stay black-on-white so
+   any scanner reads it, so it sits on a white rounded pad even on the dark page. */
+.qr-box {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0 12px;
+}
+.qr {
+  display: block;
+  background: #fff;
+  padding: 12px;
+  border-radius: 18px;
+  image-rendering: pixelated; /* keep the modules crisp when scaled */
+  max-width: 100%;
+  height: auto;
+}
+
+/* --- Order card: a token-style row (icon, route, reward) and the parcel text
+   under a divider, like a grouped asset in a wallet. --- */
+.order-card {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: start;
+  background: var(--card);
+  border: 1px solid var(--edge);
+  border-radius: var(--r-card);
+  color: var(--text);
+  overflow: hidden;
+  transition: background 0.15s, border-color 0.15s, transform 0.2s var(--ease);
+}
+.order-card:hover {
+  background: #212329;
+  border-color: var(--edge-strong);
+}
+.order-card:active {
+  transform: scale(0.985);
+}
+.order-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+}
+.order-icon {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--card-3);
+  color: var(--text-2);
+}
+/* The round icon takes the status color, like a token's logo. */
+.order-icon.is-open,
+.order-icon.is-completed {
+  background: rgba(62, 192, 141, 0.16);
+  color: var(--green);
+}
+.order-icon.is-accepted {
+  background: rgba(232, 181, 77, 0.16);
+  color: var(--amber);
+}
+.order-icon.is-funding {
+  background: rgba(90, 163, 240, 0.16);
+  color: var(--blue);
+}
+.order-route {
+  flex: 1;
+  min-width: 0;
+}
+.order-card .area {
+  display: block;
+  font-weight: 700;
+  font-size: 17px;
+  overflow-wrap: anywhere;
+}
+.order-card .origin {
+  display: block;
+  margin-top: 2px;
+  font-size: 13.5px;
+  color: var(--hint);
+  overflow-wrap: anywhere;
+}
+.order-amount {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.reward {
+  font-weight: 700;
+  font-size: 17px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.order-card .desc {
+  margin: 0;
+  padding: 11px 16px 13px;
+  border-top: 1px solid var(--divider);
+  color: var(--text-2);
+  font-size: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+.order-card .desc:empty {
+  display: none;
+}
+
+/* --- Status: a colored dot and word, like a price change in a wallet --- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--hint);
+}
+.badge::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.badge-open,
+.badge-completed {
+  color: var(--green);
+}
+.badge-accepted,
+.badge-delivered {
+  color: var(--amber);
+}
+.badge-funding {
+  color: var(--blue);
+}
+.badge-cancelled,
+.badge-expired {
+  color: var(--hint);
+}
+
+/* --- Detail page --- */
+.link-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  background: none;
+  border: none;
+  color: var(--text);
+  padding: 0;
+  padding-inline-end: 16px;
+  margin-bottom: 6px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* The order's head card: status, route, and the reward as the big number. */
+.hero {
+  background: var(--card);
+  border: 1px solid var(--edge);
+  border-radius: var(--r-card);
+  padding: 18px 18px 20px;
+  margin-bottom: 12px;
+}
+.hero-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.hero .page-title {
+  font-size: 22px;
+  margin: 0;
+}
+.hero-from {
+  margin: 4px 0 0;
+  color: var(--hint);
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+.hero-amount {
+  margin: 18px 0 0;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.hero-amount small {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--hint);
+  margin-inline-start: 6px;
+}
+
+.desc-full {
+  margin: 0 0 12px;
+  padding: 16px;
+  background: var(--card);
+  border: 1px solid var(--edge);
+  border-radius: var(--r-card);
+  font-size: 15px;
+  line-height: 1.55;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* key / value rows inside a rounded card */
+.meta {
+  margin: 0 0 16px;
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+  border: 1px solid var(--edge);
+  border-radius: var(--r-card);
+  padding: 2px 16px;
+}
+.meta div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 0;
+}
+.meta div + div {
+  border-top: 1px solid var(--divider);
+}
+.meta dt {
+  color: var(--hint);
+  font-size: 14px;
+}
+.meta dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-weight: 600;
+  font-size: 14px;
+  text-align: end;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.actions > p {
+  margin: 4px 2px 0;
+}
+.actions + .card {
+  margin-top: 12px;
+}
+.actions + .actions {
+  margin-top: 10px;
+}
+/* Two buttons side by side (Share / Copy). */
+.actions-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+.actions-row .btn {
+  flex: 1;
+}
+
+/* --- Buttons: large rounded pills; the main one is pale yellow with a soft
+   darker ledge under it, so it reads as the thing to press. --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 54px;
+  border: 1px solid var(--edge);
+  border-radius: 18px;
+  padding: 14px 18px;
+  font-size: 16px;
+  font-weight: 700;
+  background: var(--card-2);
+  color: var(--text);
+  transition: background 0.15s, color 0.15s, transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+.btn:hover:not(:disabled) {
+  background: var(--card-3);
+}
+.btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.99);
+}
+.btn:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.btn-primary {
+  background: var(--accent);
+  border-color: transparent;
+  color: var(--accent-ink);
+  box-shadow: 0 3px 0 var(--accent-ledge), 0 8px 18px -10px rgba(251, 232, 166, 0.45);
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-press);
+}
+.btn-primary:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--accent-ledge);
+}
+/* A main action that cannot run yet goes flat gray, like a wallet's Review. */
+.btn-primary:disabled {
+  opacity: 1;
+  background: #5c5c5f;
+  color: #9a9a9e;
+  box-shadow: none;
+}
+
+/* Destructive action — soft red, never the loudest thing on the page. */
+.btn-danger {
+  background: var(--red-fill);
+  border-color: rgba(240, 106, 98, 0.28);
+  color: var(--red);
+}
+.btn-danger:hover:not(:disabled) {
+  background: rgba(240, 106, 98, 0.2);
+}
+
+/* --- Forms --- */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.form > p {
+  margin: 0 2px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.field-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-2);
+  padding: 0 2px;
+}
+.field > .hint {
+  padding: 0 2px;
+}
+.field input,
+.field textarea,
+.field select,
+.input {
+  font: inherit;
+  font-size: 16px; /* 16px keeps iOS from zooming into the field */
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--edge-strong);
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--text);
+  caret-color: var(--accent);
+  resize: vertical;
+  transition: border-color 0.15s, background 0.15s;
+}
+.field textarea {
+  resize: none;
+  overflow: hidden;
+}
+.field input::placeholder,
+.field textarea::placeholder,
+.input::placeholder {
+  color: var(--hint);
+}
+.field input:focus,
+.field textarea:focus,
+.field select:focus,
+.input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+  background: #202227;
+}
+.field [aria-invalid='true'],
+.route [aria-invalid='true'],
+.amount [aria-invalid='true'] {
+  border-color: var(--red);
+}
+.field select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-inline-end: 44px;
+  cursor: pointer;
+}
+.select-wrap {
+  position: relative;
+}
+.select-wrap .icon {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 14px;
+  transform: translateY(-50%);
+  color: var(--hint);
+  pointer-events: none;
+}
+.counter {
+  align-self: flex-end;
+  font-size: 12.5px;
+  color: var(--hint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* From | To pair, side by side in one card with a round arrow on the seam —
+   the same shape as a swap's From / To picker. */
+.route {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--card);
+  border: 1px solid var(--edge);
+  border-radius: var(--r-card);
+}
+.route-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 16px 12px;
+  min-width: 0;
+}
+/* The round arrow (34px) sits on the seam, half in each cell, so the inner
+   side of each cell keeps 17px for it plus a clear gap before the text. */
+.route-cell:first-child {
+  padding-inline-end: 32px;
+}
+.route-cell:last-child {
+  border-inline-start: 1px solid var(--divider);
+  padding-inline-start: 32px;
+}
+.route-label {
+  font-size: 13px;
+  color: var(--hint);
+}
+.route input {
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  width: 100%;
+  padding: 4px 0;
+  border: none;
+  border-bottom: 1px solid transparent;
+  background: none;
+  color: var(--text);
+  caret-color: var(--accent);
+}
+.route input::placeholder {
+  color: #7a7c83;
+  font-size: 15px;
+  font-weight: 600;
+}
+.route input:focus {
+  outline: none;
+  border-bottom-color: var(--edge-strong);
+}
+.route-seam {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 34px;
+  height: 34px;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: var(--card-2);
+  border: 1px solid var(--edge-strong);
+  color: var(--text-2);
+}
+
+/* The reward as one big centered number, like the amount on a swap screen. */
+.amount {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 16px 16px;
+  background: var(--card);
+  border: 1px solid var(--edge);
+  border-radius: var(--r-card);
+  text-align: center;
+}
+.amount-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+.amount-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  max-width: 100%;
+}
+.amount input {
+  font: inherit;
+  font-size: 44px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  max-width: 10ch;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--text);
+  text-align: center;
+  caret-color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.amount input::placeholder {
+  color: #5f6168;
+  font-size: 26px;
+}
+.amount input:focus {
+  outline: none;
+}
+.amount-unit {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--hint);
+}
+.amount .hint {
+  margin: 0;
+  max-width: 36ch;
+}
+
+/* Summary right above the main button: plain rows, no box. */
+.form > .meta.summary {
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 0 2px;
+  margin: 4px 0 0;
+}
+.summary div {
+  padding: 6px 0;
+}
+.summary div + div {
+  border-top: none;
+}
+
+/* A rule the user must not miss (the delivery code). */
+.notice {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 13px 14px;
+  border-radius: 16px;
+  background: rgba(251, 232, 166, 0.08);
+  border: 1px solid rgba(251, 232, 166, 0.2);
+  color: var(--text);
+  font-size: 14px;
+}
+.notice .icon {
+  color: var(--accent);
+  margin-top: 1px;
+}
+
+/* --- Feed: active filter chips under the title --- */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: -6px 0 14px;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 7px 14px;
+  border: 1px solid var(--edge-strong);
+  border-radius: 14px;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+}
+.chip .icon {
+  color: var(--hint);
+}
+.load-more {
+  width: 100%;
+  margin-top: 14px;
+}
+
+/* --- Bottom sheet (feed filter, transaction preview) --- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 6, 8, 0.62);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 100;
+  animation: fade-in 0.2s ease-out;
+}
+.modal {
+  width: 100%;
+  max-width: 560px;
+  max-height: 88svh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--card);
+  border: 1px solid var(--edge);
+  border-bottom: none;
+  border-radius: 26px 26px 0 0;
+  padding: 10px 16px calc(20px + env(safe-area-inset-bottom));
+  box-shadow: 0 -18px 40px -20px rgba(0, 0, 0, 0.6);
+  animation: modal-up 0.32s var(--ease);
+}
+.modal-grip {
+  display: block;
+  width: 64px;
+  height: 24px;
+  margin: 0 auto 6px;
+  padding: 0;
+  border: none;
+  background: none;
+  position: relative;
+}
+.modal-grip::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 40px;
+  height: 4px;
+  border-radius: 4px;
+  background: var(--card-3);
+  transform: translate(-50%, -50%);
+}
+.modal-title {
+  margin: 0 0 16px;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+}
+.modal .meta {
+  background: var(--card-2);
+  border-color: var(--edge);
+}
+.modal .meta div + div {
+  border-top-color: rgba(255, 255, 255, 0.07);
+}
+@keyframes modal-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Welcome: the one-time intro, a full screen over the app. */
+.welcome {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: calc(28px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom));
+  background: var(--bg);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  animation: fade-in 0.25s ease-out;
+}
+.welcome-body {
+  flex: 1;
+  text-align: center;
+}
+.welcome-logo {
+  display: block;
+  margin: 0 auto 14px;
+  border-radius: 18px;
+}
+.welcome-title {
+  margin: 0 0 8px;
+  font-size: 24px;
+  font-weight: 700;
+}
+.welcome-lead {
+  margin: 0 auto 24px;
+  max-width: 420px;
+  color: var(--text-2);
+}
+.welcome-steps {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: start;
+}
+.welcome-step {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: var(--card);
+  border: 1px solid var(--edge);
+  border-radius: var(--r-card);
+  padding: 14px;
+}
+.welcome-step strong {
+  display: block;
+  margin-bottom: 2px;
+}
+.welcome-step-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--card-2);
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.welcome-btn {
+  width: 100%;
+  flex-shrink: 0;
+}
+
+/* Filter sheet: a search field per side, then a grid of city tiles. */
+.modal-head {
+  touch-action: none;
+  cursor: grab;
+}
+.sheet-section + .sheet-section {
+  margin-top: 28px;
+}
+.sheet-label {
+  margin: 0 2px 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+.search {
+  position: relative;
+  display: block;
+  margin-bottom: 14px;
+}
+.search .icon {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: 14px;
+  transform: translateY(-50%);
+  color: var(--hint);
+  pointer-events: none;
+}
+.search .input {
+  padding-inline-start: 44px;
+  background: var(--card-2);
+  border-color: var(--edge);
+}
+.city-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.city-tile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 62px;
+  padding: 10px 14px;
+  border: 1px solid var(--edge);
+  border-radius: 16px;
+  background: var(--card-2);
+  color: var(--text);
+  text-align: start;
+  transition: background 0.15s, border-color 0.15s;
+}
+.city-tile:hover {
+  background: var(--card-3);
+}
+.city-tile[aria-pressed='true'] {
+  background: var(--bg);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+.city-tile-body {
+  flex: 1;
+  min-width: 0;
+}
+.city-tile-name {
+  display: block;
+  font-weight: 700;
+  font-size: 15px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.city-tile-count {
+  display: block;
+  font-size: 13px;
+  color: var(--hint);
+  font-variant-numeric: tabular-nums;
+}
+.city-tile .icon {
+  color: var(--text-2);
+}
+
+/* --- Tabs: a segmented control; the active segment is a raised pill --- */
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: 16px;
+  border: 1px solid var(--edge-strong);
+  border-radius: 16px;
+}
+.tab {
+  flex: 1;
+  min-height: 42px;
+  border: none;
+  border-radius: 12px;
+  background: none;
+  color: var(--hint);
+  padding: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  transition: color 0.15s, background 0.15s;
+}
+.tab:hover:not(.active) {
+  color: var(--text);
+}
+.tab.active {
+  background: var(--card-2);
+  color: var(--text);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.addr {
+  font-size: 14px;
+  color: var(--text-2);
+  margin: 0 0 4px;
+  word-break: break-all;
+}
+/* A link shown in a sunken field, ready to copy. */
+.link-field {
+  margin: 10px 0 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--bg);
+  border: 1px solid var(--edge);
+  font-size: 13px;
+  color: var(--text-2);
+  word-break: break-all;
+}
+
+/* --- Profile: the wallet card with the balance as the big number --- */
+/* A row used as a card's heading: icon tile + title, no padding of its own. */
+.card-head {
+  padding: 0;
+  min-height: 0;
+}
+.card .card-note {
+  margin: 12px 0 14px;
+}
+.wallet-label {
+  margin: 18px 0 2px !important;
+  font-size: 14px;
+  color: var(--hint);
+}
+.wallet-amount {
+  margin: 0 !important;
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.wallet-amount small {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--hint);
+  margin-inline-start: 6px;
+}
+.wallet-sub {
+  margin: 6px 0 16px !important;
+  font-size: 14px;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+.wallet-card .btn {
+  width: 100%;
+}
+
+/* --- Bottom navigation: icon over label; the active tab lights up --- */
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  height: calc(var(--nav-h) + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  max-width: 560px;
+  margin: 0 auto;
+  display: flex;
+  background: rgba(20, 22, 27, 0.94);
+  border-top: 1px solid var(--edge);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--hint);
+  font-size: 12.5px;
+  font-weight: 600;
+  transition: color 0.15s;
+}
+.nav-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 30px;
+  border-radius: 10px;
+  transition: background 0.2s var(--ease), color 0.2s;
+}
+.nav-item.active {
+  color: var(--text);
+}
+.nav-item.active .nav-icon {
+  color: var(--accent-ink);
+  background: var(--accent);
+  box-shadow: 0 2px 0 var(--accent-ledge);
+}
+.nav-label {
+  line-height: 1;
+}
+
+/* --- Top bar: the Marketplace contract as a small proof line, or the loud
+   testnet warning. --- */
+.top-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 10px 16px 0;
+  padding: 8px 12px;
+  border-radius: 14px;
+  background: var(--card);
+  border: 1px solid var(--edge);
+  color: var(--hint);
+  font-size: 12px;
+  text-align: center;
+}
+.top-banner .icon {
+  color: var(--green);
+}
+/* The contract address keeps its exact case (base64url is case-sensitive). It
+   is a link to the contracts repo. The 48-char address must fit on one line
+   next to the shield icon, so its size follows the screen width (a mono char
+   is ~0.6em wide; 84px = margins, padding, border, icon and gap). It still
+   wraps rather than overflowing on very narrow screens. */
+.banner-addr {
+  min-width: 0;
+  font-size: clamp(8px, calc((100vw - 84px) / 29.5), 12px);
+  color: var(--text-2);
+  word-break: break-all;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.25);
+  text-underline-offset: 3px;
+}
+/* Red variants: testnet, and the missing Telegram @username nudge. */
+.top-banner.is-warn,
+.username-banner {
+  background: var(--red-fill);
+  border-color: rgba(240, 106, 98, 0.35);
+  color: var(--red);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* --- Wallet proof / success note --- */
+.proof-ok {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--green);
+  font-size: 14px;
+  font-weight: 700;
+  margin: 4px 2px;
+}
+
+/* --- Right-to-left (Persian, Arabic) ---
+   <html dir="rtl"> is set in main.jsx for these languages. Flex rows reverse on
+   their own, spacing uses inline-start/end, and directional icons carry
+   .icon-flip. Amounts and addresses sit in <bdi> so they read "10 USDT". */
+[dir='rtl'] .route-seam {
+  transform: translate(-50%, -50%) scaleX(-1);
+}
+
+/* --- Diagnostics (hidden screen, see pages/Debug.jsx) --- */
+.debug-row {
+  border-top: 1px solid var(--divider);
+  padding: 8px 0;
+  font-size: 13px;
+}
+.debug-row:first-of-type {
+  border-top: 0;
+}
+.debug-key {
+  word-break: break-all;
+  color: var(--text-2);
+}
+.debug-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+/* --- Reduced motion --- */
+@media (prefers-reduced-motion: reduce) {
+  .icon-btn.spinning .icon,
+  .modal,
+  .modal-overlay,
+  .welcome {
+    animation: none;
+  }
+  .btn,
+  .order-card {
+    transition: none;
+  }
+}
+.modal:focus {
+  outline: none;
+}

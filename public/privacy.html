@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SwiftDelivery — Privacy Policy</title>
+  <style>
+    body { font-family: sans-serif; max-width: 720px; margin: 40px auto; padding: 0 20px; color: #1a1a1a; line-height: 1.6; }
+    h1 { font-size: 1.6rem; margin-bottom: 4px; }
+    .subtitle { color: #666; font-size: 0.9rem; margin-bottom: 32px; }
+    h2 { font-size: 1.05rem; margin-top: 28px; margin-bottom: 6px; }
+    p { margin: 6px 0; }
+    ul { margin: 6px 0; padding-left: 22px; }
+    a { color: #555; }
+  </style>
+</head>
+<body>
+  <h1>SwiftDelivery — Privacy Policy</h1>
+  <p class="subtitle">Last updated: October 2026</p>
+
+  <h2>1. General Provisions</h2>
+  <p>This Privacy Policy describes how SwiftDelivery collects, uses, and protects information when you access the Service through Telegram. By using the Service you consent to the practices described here.</p>
+
+  <h2>2. Data We Collect</h2>
+  <p>We collect the minimum information needed to operate the Service:</p>
+  <ul>
+    <li><strong>Telegram contact</strong> — your Telegram @username, numeric Telegram User ID, and first name. When you create or accept an order, they are written into the order smart contract and become publicly visible on the blockchain. The @username is required so that Client and Courier can contact each other. We do not collect your phone number or profile photo.</li>
+    <li><strong>TON wallet address</strong> — linked to your session when you connect a wallet, used to display your orders and sign transactions.</li>
+    <li><strong>USDT wallet</strong> — the order's own USDT wallet, which receives the Client's reward and pays it out to the Courier or back to the Client; its address is derived from your wallet address and is publicly visible on the TON blockchain.</li>
+    <li><strong>Order data</strong> — the destination city, optional origin place, and parcel description you enter when creating an order, the reward amount, and the delivery time you choose (1 to 14 days). The exact delivery address is never recorded on-chain and is not requested by the app. All of the above is stored in the smart contract and publicly visible on the TON blockchain.</li>
+    <li><strong>Delivery code</strong> — the private code generated when you create an order is stored on your device and backed up to your Telegram account's cloud storage (Telegram CloudStorage), so it survives reinstalls on the same Telegram account. The app removes the code from your device and from CloudStorage once the order is closed, and removes the code of an order that never reached the blockchain after 24 hours. The code itself is never published; the blockchain stores only a cryptographic hash of it.</li>
+    <li><strong>Referral address</strong> — if you open the app through a referral link, the partner's TON wallet address is saved on your device and in Telegram CloudStorage, so it is the same on all your devices. This link stays with your account for good: only the first referral link counts, and a later link does not replace it. The address is written into the smart contract of every order you create and becomes publicly visible on the blockchain.</li>
+    <li><strong>Language preference</strong> — taken from your Telegram locale to display the interface in your language.</li>
+  </ul>
+  <p>We do not require identity documents, email addresses, or photographs.</p>
+
+  <h2>3. Blockchain Data</h2>
+  <p>Information written to the TON blockchain is <strong>public and permanent</strong>. This includes: the TON wallet addresses of the Client and Courier, the order's USDT wallet address, the Telegram contact of both parties (@username if set, numeric User ID, and first name), the destination city, the origin place, the parcel description, the reward amount, the delivery time, the referral address (if any), and transaction history. Anyone can read this data. We cannot delete or modify data that has been submitted to the blockchain.</p>
+
+  <h2>4. How We Use Your Data</h2>
+  <ul>
+    <li>To display your active and past orders.</li>
+    <li>To match Clients with Couriers on the marketplace.</li>
+    <li>To show a Client how the Courier did on past orders (delivered, gave up, missed the deadline), read from public blockchain data.</li>
+    <li>To provide technical support.</li>
+    <li>To improve the Service.</li>
+  </ul>
+  <p>We do not use your data for advertising and do not sell it to third parties.</p>
+
+  <h2>5. Third-Party Services</h2>
+  <p>The Service interacts with the TON blockchain network (transactions are broadcast to public nodes) and uses TON API providers for reading blockchain state. It also uses Telegram CloudStorage to back up your delivery codes and to keep your referral link. These services process only the data necessary to perform their function.</p>
+  <p>We use Cloudflare Web Analytics to count visits and measure how fast the app loads. It sets no cookies and does not track you across sites. It records the page address without the part after "#" or "?", the referring site, your browser and device type, your country (from your IP address), and load times. It does not receive your Telegram data or your wallet address.</p>
+
+  <h2>6. Data Retention and Your Rights</h2>
+  <p>Off-chain data (session information) is retained for as long as necessary to operate the Service and meet legal requirements. You may request deletion of your off-chain data by contacting support. Blockchain data cannot be deleted. Delivery codes and the referral link stored in Telegram CloudStorage belong to your Telegram account and can be removed by deleting the Mini App's data in Telegram.</p>
+
+  <h2>7. Security</h2>
+  <p>We apply technical safeguards to protect data stored off-chain, including restricted access and encryption in transit. However, no system is completely secure and we cannot guarantee absolute protection.</p>
+
+  <h2>8. Amendments</h2>
+  <p>This Policy may be updated at any time. Continued use of the Service after changes are posted constitutes acceptance of the revised Policy.</p>
+
+  <h2>9. Contact</h2>
+  <p>For privacy-related requests, contact us via our support chat: <a href="https://t.me/SwiftDelivery_support" target="_blank" rel="noopener noreferrer">t.me/SwiftDelivery_support</a>.</p>
+</body>
+</html>
