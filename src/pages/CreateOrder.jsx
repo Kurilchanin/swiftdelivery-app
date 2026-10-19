@@ -363,6 +363,7 @@ export default function CreateOrder() {
             {description.length}/{MAX_DESC}
           </span>
         </label>
+        <p className="hint">{t('create.descHint')}</p>
 
         {/* The reward as one big number, like the amount on a swap screen. */}
         <label className="amount">

@@ -52,7 +52,8 @@ const en = {
 
   // Create order
   'create.title': 'Create order',
-  'create.whatToDeliver': 'What to deliver',
+  'create.whatToDeliver': 'What to deliver (public)',
+  'create.descHint': 'Everyone can read this, and it stays on-chain forever. Do not write an address, phone number, name or codes. Send them to the courier in the chat after they accept.',
   'create.descPlaceholder': 'Describe the parcel',
   'create.toField': 'To — destination city (public)',
   'create.toPlaceholder': 'City to deliver to',
@@ -252,7 +253,8 @@ const ru = {
 
   // Create order
   'create.title': 'Создать заказ',
-  'create.whatToDeliver': 'Что доставить',
+  'create.whatToDeliver': 'Что доставить (публично)',
+  'create.descHint': 'Это видно всем и навсегда остаётся в блокчейне. Не пишите адрес, телефон, имя и коды. Отправьте их курьеру в чате после того, как он примет заказ.',
   'create.descPlaceholder': 'Опишите посылку',
   'create.toField': 'Куда — город назначения (публично)',
   'create.toPlaceholder': 'Город доставки',
@@ -453,7 +455,8 @@ const es = {
 
   // Create order
   'create.title': 'Crear pedido',
-  'create.whatToDeliver': 'Qué entregar',
+  'create.whatToDeliver': 'Qué entregar (público)',
+  'create.descHint': 'Todos pueden leer esto y queda en la cadena para siempre. No escribas dirección, teléfono, nombre ni códigos. Envíaselos al mensajero por el chat cuando acepte.',
   'create.descPlaceholder': 'Describe el paquete',
   'create.toField': 'A — ciudad de destino (público)',
   'create.toPlaceholder': 'Ciudad de entrega',
@@ -654,7 +657,8 @@ const fa = {
 
   // Create order
   'create.title': 'ایجاد سفارش',
-  'create.whatToDeliver': 'چه چیزی تحویل داده شود',
+  'create.whatToDeliver': 'چه چیزی تحویل داده شود (عمومی)',
+  'create.descHint': 'همه می‌توانند این را بخوانند و برای همیشه روی زنجیره می‌ماند. آدرس، شماره تلفن، نام و کدها را ننویسید. بعد از پذیرش پیک، آن‌ها را در گفتگو برایش بفرستید.',
   'create.descPlaceholder': 'بسته را توصیف کنید',
   'create.toField': 'به — شهر مقصد (عمومی)',
   'create.toPlaceholder': 'شهر تحویل',
@@ -855,7 +859,8 @@ const ar = {
 
   // Create order
   'create.title': 'إنشاء طلب',
-  'create.whatToDeliver': 'ما المراد توصيله',
+  'create.whatToDeliver': 'ما المراد توصيله (عام)',
+  'create.descHint': 'يمكن للجميع قراءة هذا ويبقى على السلسلة إلى الأبد. لا تكتب عنوانًا أو رقم هاتف أو اسمًا أو رموزًا. أرسلها إلى المندوب في المحادثة بعد قبوله.',
   'create.descPlaceholder': 'صف الطرد',
   'create.toField': 'إلى — مدينة الوجهة (عام)',
   'create.toPlaceholder': 'مدينة التوصيل',
