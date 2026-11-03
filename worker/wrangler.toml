@@ -1,0 +1,43 @@
+# The SwiftDelivery Worker: toncenter proxy + accept-invite mailbox
+# (src/router.js). Deploy from this folder, in the Cloudflare account fatherslab:
+#   npx wrangler d1 create swiftdelivery-invites          → database_id below
+#   npx wrangler d1 migrations apply swiftdelivery-invites --remote
+#   npx wrangler secret put TONCENTER_KEY_MAINNET   (value: TONCENTER_MAINNET_API_KEY in contract/.env)
+#   npx wrangler secret put TONCENTER_KEY_TESTNET   (value: TONCENTER_TESTNET_API_KEY in contract/.env)
+#   npx wrangler deploy
+name = "swiftdelivery"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+[vars]
+# Pages (and its preview builds) and local dev. Anything else gets 403.
+ALLOWED_ORIGINS = "https://swiftdelivery.pages.dev,https://*.swiftdelivery.pages.dev,http://localhost:5173"
+# The app's own key. PUBLIC: it is in the app's JS bundle (VITE_APP_KEY), so it
+# only filters stray traffic; the toncenter keys are the secrets above.
+APP_KEY = "sd_c9b8ae57e37ed8430224925c2f8c0aa5"
+# Invites are stored only for orders of these Marketplaces.
+MARKETPLACE_MAINNET = "EQAdMv83DD8WP1nPOh-rUSCl7ogGqe7wyKxjdXJQySrw8_YG"
+MARKETPLACE_TESTNET = "kQDzEs6Lk876lHN-L94rv6oDYPPaWX3AdP8buzU3q2qZpM1O"
+
+# Hourly: delete invites that have run out (src/index.js scheduled).
+[triggers]
+crons = ["0 * * * *"]
+
+[[d1_databases]]
+binding = "INVITES"
+database_name = "swiftdelivery-invites"
+database_id = "dbb0397b-0730-46ff-8058-2fc4572fb3e8"
+migrations_dir = "migrations"
+
+# Per-IP limits (a Cloudflare location counts on its own; approximate).
+[[ratelimits]]
+name = "TON_LIMIT"
+namespace_id = "1001"
+simple = { limit = 120, period = 60 }
+
+[[ratelimits]]
+name = "INVITE_LIMIT"
+namespace_id = "1002"
+simple = { limit = 10, period = 60 }
