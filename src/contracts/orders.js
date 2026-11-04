@@ -253,12 +253,14 @@ export function secretCommit(secret) {
 }
 
 // Render a secret as a fixed-length 64-char hex string for the QR code, and parse
-// it back. The QR carries just the hex digits; the courier's scanner reads them.
+// it back. The QR carries just the hex digits; the courier's scanner reads them,
+// or the courier pastes the same digits the client sent as text.
 export function secretToHex(secret) {
   return BigInt(secret).toString(16).padStart(64, '0')
 }
 export function secretFromHex(hex) {
-  const clean = String(hex || '').trim().replace(/^0x/i, '')
+  // Spaces and line breaks often come along when the code is copied from a chat.
+  const clean = String(hex || '').replace(/\s+/g, '').replace(/^0x/i, '')
   if (!/^[0-9a-fA-F]{1,64}$/.test(clean)) return null
   try {
     return BigInt('0x' + clean)

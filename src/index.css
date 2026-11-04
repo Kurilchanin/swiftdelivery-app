@@ -313,6 +313,29 @@ button.row:active {
   color: var(--red);
   margin-top: 1px;
 }
+/* The courier's field for a delivery code sent as text. */
+.field textarea.code-input {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 16px;
+  word-break: break-all;
+  text-align: left;
+}
+/* The same delivery code as text, for sending it in a chat. */
+.code-text {
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--card-3);
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  word-break: break-all;
+  user-select: all;
+  -webkit-user-select: all;
+  direction: ltr;
+  text-align: left;
+}
 .qr-box {
   display: flex;
   justify-content: center;

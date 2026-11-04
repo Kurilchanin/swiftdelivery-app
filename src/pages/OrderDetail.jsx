@@ -105,6 +105,8 @@ export default function OrderDetail({ address }) {
   const [order, setOrder] = useState(undefined) // undefined = loading, null = not found
   const [busy, setBusy] = useState(false)
   const [note, setNote] = useState('')
+  // Courier: the delivery code typed or pasted by hand (null = field closed).
+  const [codeInput, setCodeInput] = useState(null)
   // The client's delivery code recovered from Telegram CloudStorage when this
   // device's localStorage lacks it (cleared storage / new device). null until a
   // recovery succeeds; the local cache, when present, is preferred over this.
@@ -372,7 +374,25 @@ export default function OrderDetail({ address }) {
     // label here — the full instruction is already shown on the page above.
     const scanned = await scanQr(t('order.scanCode'))
     if (!scanned) return // user closed the scanner without scanning
-    const secret = secretFromHex(scanned)
+    await confirmCode(scanned)
+  }
+
+  // Courier path when the client sent the code as text: read it from the
+  // clipboard into the field. Telegram may refuse clipboard access — then the
+  // courier pastes into the field by hand.
+  async function pasteCode() {
+    try {
+      const text = await navigator.clipboard.readText()
+      if (text) setCodeInput(text.trim())
+    } catch {
+      setNote(t('order.codePasteFailed'))
+    }
+  }
+
+  // Both courier paths (scanned QR or typed code) end here: check the code's
+  // form, then send ConfirmWithCode. The contract pays only on a matching hash.
+  async function confirmCode(text) {
+    const secret = secretFromHex(text)
     if (secret == null) {
       setNote(t('order.codeInvalid'))
       return
@@ -449,7 +469,11 @@ export default function OrderDetail({ address }) {
           <h2 className="card-title">{t('order.showCodeTitle')}</h2>
           {mySecret ? (
             // Behind "Show code" and a warning: the code pays the courier at once.
-            <DeliveryCode secret={mySecret} expired={isExpired} />
+            <DeliveryCode
+              secret={mySecret}
+              expired={isExpired}
+              courierChat={telegramLink(parseContact(order.courierContact))}
+            />
           ) : (
             <p className="hint">{t('order.codeLost')}</p>
           )}
@@ -663,6 +687,41 @@ export default function OrderDetail({ address }) {
               <Icon name="scan" size={20} />
               {t('order.scanCode')}
             </button>
+            {/* The client is away: they sent the same code as text. */}
+            {codeInput == null ? (
+              <button className="btn" disabled={busy} onClick={() => setCodeInput('')}>
+                <Icon name="copy" size={20} />
+                {t('order.enterCode')}
+              </button>
+            ) : (
+              <>
+                <label className="field">
+                  <span className="field-label">{t('order.enterCodeLabel')}</span>
+                  <textarea
+                    className="code-input"
+                    rows={3}
+                    value={codeInput}
+                    onChange={(e) => setCodeInput(e.target.value)}
+                    autoComplete="off"
+                    autoCapitalize="off"
+                    spellCheck={false}
+                    dir="ltr"
+                  />
+                </label>
+                <button className="btn" disabled={busy} onClick={pasteCode}>
+                  <Icon name="copy" size={20} />
+                  {t('order.codePaste')}
+                </button>
+                <button
+                  className="btn btn-primary"
+                  disabled={busy || !codeInput.trim()}
+                  onClick={() => confirmCode(codeInput)}
+                >
+                  <Icon name="check" size={20} />
+                  {t('order.codeConfirm')}
+                </button>
+              </>
+            )}
           </>
         )}
 

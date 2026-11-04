@@ -341,3 +341,19 @@ describe('orders read from chain', () => {
     }
   })
 })
+
+describe('the delivery code as text', () => {
+  const hex = '0f'.repeat(32)
+  it('reads the code the client sent, with spaces and line breaks', () => {
+    const want = orders.secretFromHex(hex)
+    expect(want).toBe(BigInt('0x' + hex))
+    expect(orders.secretFromHex(' ' + hex.slice(0, 30) + '\n' + hex.slice(30) + ' ')).toBe(want)
+    expect(orders.secretFromHex(hex.match(/.{4}/g).join(' '))).toBe(want)
+  })
+  it('refuses anything that is not a code', () => {
+    expect(orders.secretFromHex('')).toBeNull()
+    expect(orders.secretFromHex('hello')).toBeNull()
+    expect(orders.secretFromHex(hex + 'ab')).toBeNull()
+    expect(orders.secretFromHex('Code: ' + hex)).toBeNull()
+  })
+})
